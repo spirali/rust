@@ -393,10 +393,24 @@ fn report_unexpected_variant_res(
                 .with_help(format!("for more information, visit {patterns_url}"))
         }
         Res::Def(DefKind::Variant, _) if let Some(expr) = expr => {
-            err.span_label(span, format!("not a {expected}"));
+            let node = tcx.hir_node(expr.hir_id);
+            err.span_label(span, format!("not a {expected} {:?}", node));
             let variant = tcx.expect_variant_res(res);
+
+            // This will throw an error about cycle:
+            //let typeck_results = tcx.typeck(expr.hir_id.owner.def_id);
+
+            // This type info just return earlybind
+            let expr_ty = tcx.type_of(expr.hir_id.owner.def_id);
+            dbg!(&expr_ty);
+
             let sugg = if variant.fields.is_empty() {
                 " {}".to_string()
+            } else if variant.fields.len() == 1 {
+                let field = variant.fields.iter().next().unwrap();
+                // This type info works
+                dbg!(tcx.type_of(field.did));
+                format!(" {{ TODO }}")
             } else {
                 format!(
                     " {{ {} }}",
