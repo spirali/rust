@@ -4,8 +4,8 @@
 use crate::source::{snippet, snippet_opt, snippet_with_applicability, snippet_with_context};
 use crate::ty::expr_sig;
 use crate::{get_parent_expr_for_hir, higher};
-use rustc_ast::util::parser::AssocOp;
 use rustc_ast::ast;
+use rustc_ast::util::parser::AssocOp;
 use rustc_errors::Applicability;
 use rustc_hir as hir;
 use rustc_hir::{Closure, ExprKind, HirId, MutTy, TyKind};
@@ -444,7 +444,7 @@ impl<'a> Not for Sugg<'a> {
     type Output = Sugg<'a>;
     fn not(self) -> Sugg<'a> {
         use AssocOp::Binary;
-        use ast::BinOpKind::{Eq, Gt, Ge, Lt, Le, Ne};
+        use ast::BinOpKind::{Eq, Ge, Gt, Le, Lt, Ne};
 
         if let Sugg::BinOp(op, lhs, rhs) = self {
             let to_op = match op {
@@ -515,10 +515,10 @@ pub fn make_assoc(op: AssocOp, lhs: &Sugg<'_>, rhs: &Sugg<'_>) -> Sugg<'static> 
             op,
             AssocOp::Binary(
                 ast::BinOpKind::Add
-                | ast::BinOpKind::Sub
-                | ast::BinOpKind::Mul
-                | ast::BinOpKind::Div
-                | ast::BinOpKind::Rem
+                    | ast::BinOpKind::Sub
+                    | ast::BinOpKind::Mul
+                    | ast::BinOpKind::Div
+                    | ast::BinOpKind::Rem
             )
         )
     }
@@ -578,10 +578,8 @@ enum Associativity {
 /// associative.
 #[must_use]
 fn associativity(op: AssocOp) -> Associativity {
+    use ast::BinOpKind::{Add, And, BitAnd, BitOr, BitXor, Div, Eq, Ge, Gt, Le, Lt, Mul, Ne, Or, Rem, Shl, Shr, Sub};
     use rustc_ast::util::parser::AssocOp::{Assign, AssignOp, Binary, Cast, Range};
-    use ast::BinOpKind::{
-        Add, BitAnd, BitOr, BitXor, Div, Eq, Gt, Ge, And, Or, Lt, Le, Rem, Mul, Ne, Shl, Shr, Sub,
-    };
 
     match op {
         Assign | AssignOp(_) => Associativity::Right,

@@ -504,8 +504,9 @@ pub trait EvalContextExt<'tcx>: crate::MiriInterpCxExt<'tcx> {
                 let thread = match Handle::try_from_scalar(handle, this)? {
                     Ok(Handle::Thread(thread)) => Ok(thread),
                     Ok(Handle::Pseudo(PseudoHandle::CurrentThread)) => Ok(this.active_thread()),
-                    Ok(_) | Err(HandleError::InvalidHandle) =>
-                        this.invalid_handle("SetThreadDescription")?,
+                    Ok(_) | Err(HandleError::InvalidHandle) => {
+                        this.invalid_handle("SetThreadDescription")?
+                    }
                     Err(HandleError::ThreadNotFound(e)) => Err(e),
                 };
                 let res = match thread {
@@ -528,8 +529,9 @@ pub trait EvalContextExt<'tcx>: crate::MiriInterpCxExt<'tcx> {
                 let thread = match Handle::try_from_scalar(handle, this)? {
                     Ok(Handle::Thread(thread)) => Ok(thread),
                     Ok(Handle::Pseudo(PseudoHandle::CurrentThread)) => Ok(this.active_thread()),
-                    Ok(_) | Err(HandleError::InvalidHandle) =>
-                        this.invalid_handle("GetThreadDescription")?,
+                    Ok(_) | Err(HandleError::InvalidHandle) => {
+                        this.invalid_handle("GetThreadDescription")?
+                    }
                     Err(HandleError::ThreadNotFound(e)) => Err(e),
                 };
                 let (name, res) = match thread {

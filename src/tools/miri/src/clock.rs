@@ -39,8 +39,9 @@ impl Instant {
 
     pub fn duration_since(&self, earlier: Instant) -> Duration {
         match (&self.kind, earlier.kind) {
-            (InstantKind::Host(instant), InstantKind::Host(earlier)) =>
-                instant.duration_since(earlier),
+            (InstantKind::Host(instant), InstantKind::Host(earlier)) => {
+                instant.duration_since(earlier)
+            }
             (
                 InstantKind::Virtual { nanoseconds },
                 InstantKind::Virtual { nanoseconds: earlier },
@@ -129,8 +130,9 @@ impl Clock {
     pub fn now(&self) -> Instant {
         match &self.kind {
             ClockKind::Host { .. } => Instant { kind: InstantKind::Host(StdInstant::now()) },
-            ClockKind::Virtual { nanoseconds } =>
-                Instant { kind: InstantKind::Virtual { nanoseconds: nanoseconds.get() } },
+            ClockKind::Virtual { nanoseconds } => {
+                Instant { kind: InstantKind::Virtual { nanoseconds: nanoseconds.get() } }
+            }
         }
     }
 }

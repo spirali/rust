@@ -402,11 +402,23 @@ fn report_unexpected_variant_res(
 
             // This type info just return earlybind
             let expr_ty = tcx.type_of(expr.hir_id.owner.def_id);
+            dbg!(tcx.parent_hir_node(expr.hir_id));
+            dbg!(&expr);
             dbg!(&expr_ty);
 
+            let p = tcx.parent_hir_node(expr.hir_id);
+            match p {
+                hir::Node::Expr(hir::Expr { kind: hir::ExprKind::Call(_, args), .. }) => {
+                    dbg!(tcx.type_of(args[0].hir_id.owner.def_id));
+                    dbg!(tcx.sess.source_map().span_to_snippet(args[0].span));
+                }
+                _ => {}
+            }
+            
             let sugg = if variant.fields.is_empty() {
                 " {}".to_string()
-            } else if variant.fields.len() == 1 {
+            } else if variant.fields.len() == 1 
+            {
                 let field = variant.fields.iter().next().unwrap();
                 // This type info works
                 dbg!(tcx.type_of(field.did));
